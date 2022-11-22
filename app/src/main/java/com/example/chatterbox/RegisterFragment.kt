@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -34,6 +35,11 @@ class RegisterFragment : Fragment() {
           val email =view.findViewById<EditText>(R.id.inputEmail1)
           val password=view.findViewById<EditText>(R.id.inputPassword1)
           val bt=view.findViewById<Button>(R.id.btnRegister)
+          val goto =view.findViewById<TextView>(R.id.gotoRegister)
+          goto.setOnClickListener {
+             findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+
+          }
 
         auth= FirebaseAuth.getInstance()
         bt.setOnClickListener {
@@ -43,7 +49,7 @@ class RegisterFragment : Fragment() {
 
             auth.createUserWithEmailAndPassword(semail,spassword).addOnCompleteListener {
                 if(it.isSuccessful) {
-                    Toast.makeText(activity, "success", Toast.LENGTH_SHORT).show()
+
                     addUserToDatabase(sname,semail,auth.currentUser?.uid!!)
                     findNavController().navigate(R.id.action_registerFragment_to_dashBoardFragment)
                 }
@@ -61,6 +67,7 @@ class RegisterFragment : Fragment() {
     private fun addUserToDatabase(name: String, email: String, uid: String) {
         db=FirebaseDatabase.getInstance().reference
         db.child("user").child(uid).setValue(User(name,email,uid))
+
     }
 
 }
